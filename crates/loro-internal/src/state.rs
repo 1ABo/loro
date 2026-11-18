@@ -666,7 +666,7 @@ impl DocState {
                 self.dead_containers_cache.clear();
             }
             _ => {
-                self.dead_containers_cache.clear_alive();
+                self.dead_containers_cache.clear();
             }
         }
         self.pre_txn(diff.origin.clone(), diff.by);
@@ -949,6 +949,9 @@ impl DocState {
         let ret = state.apply_local_op(raw_op, op)?;
         if !ret.deleted_containers.is_empty() {
             self.dead_containers_cache.clear_alive();
+        }
+        if op.container.get_type() == ContainerType::Tree {
+            self.dead_containers_cache.clear();
         }
 
         Ok(())
